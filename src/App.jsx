@@ -1,33 +1,56 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import notifications from './notifications'
+
+function Container(props) {
+  return <div className="container mt-4">{props.children}</div>
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [list, setList] = useState(notifications)
+
+  function clearOne(id) {
+    const updated = list.filter(function (n) {
+      return n.id !== id
+    })
+    setList(updated)
+  }
+
+  function clearAll() {
+    setList([])
+  }
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <Container>
+      <h1 className="mb-3">Notifications</h1>
+
+      <p className="mb-3">
+        You have <strong>{list.length}</strong> notifications
       </p>
-    </div>
+
+      <button className="btn btn-primary mb-4" onClick={clearAll}>
+        Clear All
+      </button>
+
+      {list.map(function (n) {
+        return (
+          <div className="card mb-3" key={n.id}>
+            <div className="card-body">
+              <h5 className="card-title">{n.name}</h5>
+              <p className="card-text">{n.message}</p>
+
+              <button
+                className="btn btn-danger btn-sm"
+                onClick={function () {
+                  clearOne(n.id)
+                }}
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        )
+      })}
+    </Container>
   )
 }
 
